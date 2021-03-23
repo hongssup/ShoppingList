@@ -12,7 +12,7 @@ import FontAwesome_swift
 class ItemCell: UITableViewCell {
     
     let textField = UITextField()
-    let checkButton = UIButton()
+    public let checkButton = UIButton()
     var check: Bool = false
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -65,5 +65,9 @@ class ItemCell: UITableViewCell {
             textField.isEnabled = true
             check = false
         }
+    }
+    
+    public func editMode() {
+        checkButton.isHidden = true
     }
 }
