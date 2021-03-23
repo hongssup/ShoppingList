@@ -56,11 +56,13 @@ class ItemCell: UITableViewCell {
             checkButton.titleLabel?.font = UIFont.fontAwesome(ofSize: 24, style: .solid)
             checkButton.setTitle(.fontAwesomeIcon(name: .checkCircle), for: .normal)
             textField.textColor = .systemGray4
+            textField.isEnabled = false
             check = true
         } else {
             checkButton.titleLabel?.font = UIFont.fontAwesome(ofSize: 24, style: .regular)
             checkButton.setTitle(.fontAwesomeIcon(name: .circle), for: .normal)
             textField.textColor = .darkGray
+            textField.isEnabled = true
             check = false
         }
     }
