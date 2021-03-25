@@ -14,6 +14,7 @@ class ItemCell: UITableViewCell {
     let textField = UITextField()
     public let checkButton = UIButton()
     var check: Bool = false
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -27,6 +28,7 @@ class ItemCell: UITableViewCell {
     
     func cellConstraints() {
         textField.textColor = .darkGray
+        textField.delegate = self
         checkButton.layer.cornerRadius = 16
         checkButton.titleLabel?.font = UIFont.fontAwesome(ofSize: 24, style: .regular)
         checkButton.setTitle(.fontAwesomeIcon(name: .circle), for: .normal)
@@ -41,11 +43,12 @@ class ItemCell: UITableViewCell {
         NSLayoutConstraint.activate([
             textField.centerYAnchor.constraint(equalTo: self.centerYAnchor),
             textField.heightAnchor.constraint(equalTo: self.heightAnchor),
-            textField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            textField.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 58),//20
             textField.widthAnchor.constraint(equalToConstant: 330),
             
             checkButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            checkButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -12),
+            checkButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 16),
+            //checkButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -12),
             checkButton.widthAnchor.constraint(equalToConstant: 32),
             checkButton.heightAnchor.constraint(equalToConstant: 32)
         ])
@@ -69,5 +72,16 @@ class ItemCell: UITableViewCell {
     
     public func editMode() {
         checkButton.isHidden = true
+    }
+}
+
+extension ItemCell: UITextFieldDelegate {
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let textFieldIndexPath = self.tag
+        print(textField.text)
+        textField.resignFirstResponder()
+        ViewController().endTextEdit(textField.text ?? "", textFieldIndexPath)
+        return true
     }
 }

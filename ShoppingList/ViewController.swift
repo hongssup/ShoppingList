@@ -9,16 +9,17 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let tableView = UITableView(frame: .zero, style: .plain)
+    public let tableView = UITableView(frame: .zero, style: .plain)
     let titleView = UIView()
     let titleText = UILabel()
-    var items:[String] = []
+    //var items:[String] = []
     var color = UIColor()
     let inputText = UITextField()
     let addButton = UIButton()
     let editButton = UIButton()
     let trashButton = UIButton()
-    //let editButton = UIBarButtonItem(title: "편집", style: .plain, target: self, action: (#selector(showEditing)))
+    public let footerView = UIView()
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
     
     override func loadView() {
         super.loadView()
@@ -37,6 +38,8 @@ class ViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.isEditing = false
+        //tableView.allowsMultipleSelectionDuringEditing = true
+        //tableView.setEditing(true, animated: false)
         //tableView.tableFooterView = UIView()
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -47,7 +50,7 @@ class ViewController: UIViewController {
     }
 
     func setupSubView() {
-        color = UIColor(red: 239/255, green: 144/255, blue: 109/255, alpha: 1.0)
+        color = UIColor(red: 230/255, green: 119/255, blue: 96/255, alpha: 1.0)
         //title = "쇼핑리스트"
         
         titleView.backgroundColor = color
@@ -97,24 +100,38 @@ class ViewController: UIViewController {
         if tableView.isEditing == true {
             tableView.isEditing = false
             editButton.setTitle("편집", for: .normal)
-            addButton.isHidden = false
+            footerView.isHidden = false
         } else {
             tableView.isEditing = true
             editButton.setTitle("완료", for: .normal)
-            addButton.isHidden = true
+            footerView.isHidden = true
         }
     }
     
     @objc func deleteAll() {
-        items = []
+        appDelegate.items = []
         tableView.reloadData()
     }
+    
+    public func endTextEdit(_ text: String, _ tag: Int) {
+        if text != "" {
+            appDelegate.items[tag] = text
+        } else {
+            print(tag)
+            appDelegate.items.remove(at: tag)
+            tableView.deleteRows(at: [IndexPath(row: tag, section: 0)], with: .fade)
+        }
+        print(appDelegate.items)
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0 ) { }
+        tableView.reloadData()
+    }
+
 }
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
+        return appDelegate.items.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -131,7 +148,11 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         if let cell = cell as? ItemCell {
             //cell.textField.placeholder = "입력하세요"
             cell.textField.font = UIFont.systemFont(ofSize: 20)
+            cell.textField.text = appDelegate.items[indexPath.item]
             cell.checkButton.setTitleColor(color, for: .normal)
+            cell.textField.becomeFirstResponder()
+            cell.tag = indexPath.row
+            
         }
         cell.selectionStyle = .none
         
@@ -139,8 +160,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footerView = UIView()
-        //footerView.backgroundColor = .gray
         
         addButton.layer.cornerRadius = 12
         addButton.frame = CGRect(x: 20, y: 16, width: 32, height: 32)
@@ -148,14 +167,17 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         addButton.setTitle(.fontAwesomeIcon(name: .plus), for: .normal)
         addButton.setTitleColor(color, for: .normal)
         addButton.addTarget(self, action: #selector(addList), for: .touchUpInside)
-        //addButton.backgroundColor = color
         footerView.addSubview(addButton)
         return footerView
     }
     
     @objc func addList() {
-        items.append("")
+        appDelegate.items.append("")
         tableView.reloadData()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath)
     }
     
 //    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -165,22 +187,29 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
 //            tableView.deleteRows(at: [indexPath], with: .automatic)
 //        }
 //    }
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .none
+    }
+//    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+//        return false
+//    }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_,_,completionHandler) in
-            self.items.remove(at: indexPath.row)
+            self.appDelegate.items.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
+            print(self.appDelegate.items)
             completionHandler(true)
         }
         deleteAction.image = UIImage(systemName: "trash")
-        deleteAction.backgroundColor = .systemRed
+        deleteAction.backgroundColor = UIColor(red: 242/255, green: 89/255, blue: 66/255, alpha: 1.0)//.systemRed
         let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
         return configuration
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let movedObject = self.items[sourceIndexPath.row]
-        items.remove(at: sourceIndexPath.row)
-        items.insert(movedObject, at: destinationIndexPath.row)
+        let movedObject = appDelegate.items[sourceIndexPath.row]
+        appDelegate.items.remove(at: sourceIndexPath.row)
+        appDelegate.items.insert(movedObject, at: destinationIndexPath.row)
     }
 }
