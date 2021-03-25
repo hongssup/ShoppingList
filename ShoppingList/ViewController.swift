@@ -109,8 +109,17 @@ class ViewController: UIViewController {
     }
     
     @objc func deleteAll() {
-        appDelegate.items = []
-        tableView.reloadData()
+        let action = UIAlertController(title: nil, message: "모두 삭제하시겠습니까?", preferredStyle: .actionSheet)
+        let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { action -> Void in
+            self.appDelegate.items = []
+            self.tableView.reloadData()
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        action.addAction(deleteAction)
+        action.addAction(cancelAction)
+        self.present(action, animated: true)
+        //appDelegate.items = []
+        //tableView.reloadData()
     }
     
     public func endTextEdit(_ text: String, _ tag: Int) {
