@@ -31,6 +31,8 @@ class ViewController: UIViewController {
         setupTableView()
         setupSubView()
         addConstraints()
+        let tapGesture = UITapGestureRecognizer(target: view, action: #selector(view.endEditing))
+        view.addGestureRecognizer(tapGesture)
     }
     
     func setupTableView() {
@@ -108,6 +110,11 @@ class ViewController: UIViewController {
         }
     }
     
+    @objc func addList() {
+        appDelegate.items.append("")
+        tableView.reloadData()
+    }
+    
     @objc func deleteAll() {
         let action = UIAlertController(title: nil, message: "모두 삭제하시겠습니까?", preferredStyle: .actionSheet)
         let deleteAction = UIAlertAction(title: "삭제", style: .destructive) { action -> Void in
@@ -125,15 +132,23 @@ class ViewController: UIViewController {
     public func endTextEdit(_ text: String, _ tag: Int) {
         if text != "" {
             appDelegate.items[tag] = text
-        } else {
-            print(tag)
-            appDelegate.items.remove(at: tag)
-            tableView.deleteRows(at: [IndexPath(row: tag, section: 0)], with: .fade)
+//        } else {
+//            print(tag)
+//            appDelegate.items.remove(at: tag)
+//            tableView.deleteRows(at: [IndexPath(row: tag, section: 0)], with: .fade)
         }
         print(appDelegate.items)
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0 ) { }
+        
         tableView.reloadData()
     }
+    
+//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
+//          super.touchesBegan(touches, with: event)
+//          self.view.endEditing(true)
+//
+//    }
+    
 
 }
 
@@ -171,7 +186,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         
         addButton.layer.cornerRadius = 12
-        addButton.frame = CGRect(x: 20, y: 16, width: 32, height: 32)
+        addButton.frame = CGRect(x: 174, y: 16, width: 32, height: 32)
         addButton.titleLabel?.font = UIFont.fontAwesome(ofSize: 30, style: .solid)
         addButton.setTitle(.fontAwesomeIcon(name: .plus), for: .normal)
         addButton.setTitleColor(color, for: .normal)
@@ -180,10 +195,19 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         return footerView
     }
     
-    @objc func addList() {
-        appDelegate.items.append("")
-        tableView.reloadData()
-    }
+//    @objc func addList() {
+//        appDelegate.items.append("")
+//        tableView.reloadData()
+//    }
+//    func hideFooter(_ isHidden: Bool) {
+//        UIView.setAnimationsEnabled(false)
+//        tableView.beginUpdates()
+//
+//        footerView.isHidden = isHidden
+//
+//        tableView.endUpdates()
+//        UIView.setAnimationsEnabled(true)
+//    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath)

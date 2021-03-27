@@ -78,10 +78,22 @@ class ItemCell: UITableViewCell {
 extension ItemCell: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let textFieldIndexPath = self.tag
-        print(textField.text)
+        //let textFieldIndexPath = self.tag
+        //print(textField.text)
         textField.resignFirstResponder()
-        ViewController().endTextEdit(textField.text ?? "", textFieldIndexPath)
+        //ViewController().endTextEdit(textField.text ?? "", textFieldIndexPath)
         return true
     }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        let textFieldIndexPath = self.tag
+        print("저장됨")
+        ViewController().endTextEdit(textField.text ?? "", textFieldIndexPath)
+    }
+//    @objc override func endEditing(_ force: Bool) -> Bool {
+//        let textFieldIndexPath = self.tag
+//        print(textField.text)
+//        ViewController().endTextEdit(textField.text ?? "", textFieldIndexPath)
+//        return true
+//    }
 }
