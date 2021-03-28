@@ -53,7 +53,6 @@ class ViewController: UIViewController {
 
     func setupSubView() {
         color = UIColor(red: 230/255, green: 119/255, blue: 96/255, alpha: 1.0)
-        //title = "쇼핑리스트"
         
         titleView.backgroundColor = color
         titleText.text = "쇼핑리스트"
@@ -66,7 +65,6 @@ class ViewController: UIViewController {
         trashButton.titleLabel?.font = UIFont.fontAwesome(ofSize: 22.5, style: .regular)
         trashButton.setTitleColor(.white, for: .normal)
         trashButton.addTarget(self, action: #selector(deleteAll), for: .touchUpInside)
-        //navigationItem.rightBarButtonItem = editButton
         
         view.addSubview(titleView)
         view.addSubview(titleText)
@@ -94,7 +92,6 @@ class ViewController: UIViewController {
             editButton.trailingAnchor.constraint(equalTo: safeArea.trailingAnchor, constant: -20),
             trashButton.centerYAnchor.constraint(equalTo: titleText.centerYAnchor),
             trashButton.leadingAnchor.constraint(equalTo: safeArea.leadingAnchor, constant: 22)
-            //editButton.widthAnchor
         ])
     }
     
@@ -125,8 +122,6 @@ class ViewController: UIViewController {
         action.addAction(deleteAction)
         action.addAction(cancelAction)
         self.present(action, animated: true)
-        //appDelegate.items = []
-        //tableView.reloadData()
     }
     
     public func endTextEdit(_ text: String, _ tag: Int) {
@@ -138,17 +133,31 @@ class ViewController: UIViewController {
 //            tableView.deleteRows(at: [IndexPath(row: tag, section: 0)], with: .fade)
         }
         print(appDelegate.items)
+        //footerView.isHidden = false
+        //addButton.isHidden = false
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0 ) { }
-        
-        tableView.reloadData()
+        hideFooter(false)
+        //tableView.reloadData()
     }
     
-//    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
-//          super.touchesBegan(touches, with: event)
-//          self.view.endEditing(true)
-//
-//    }
-    
+    public func hideFooter(_ isHidden: Bool) {
+        //UIView.setAnimationsEnabled(false)
+        //tableView.beginUpdates()
+        
+        //footerView.isHidden = isHidden
+        //addButton.isHidden = isHidden
+        print(isHidden)
+//        if isHidden == true {
+//            //footerView.frame.size.height = 0
+//            print(isHidden)
+//        } else {
+//            //footerView.frame.size.height = 52
+//            print(isHidden)
+//        }
+        //tableView.reloadData()
+        //tableView.endUpdates()
+        //UIView.setAnimationsEnabled(true)
+    }
 
 }
 
@@ -173,10 +182,13 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             //cell.textField.placeholder = "입력하세요"
             cell.textField.font = UIFont.systemFont(ofSize: 20)
             cell.textField.text = appDelegate.items[indexPath.item]
+            cell.checkButton.titleLabel?.font = UIFont.fontAwesome(ofSize: 24, style: .regular)
+            cell.checkButton.setTitle(.fontAwesomeIcon(name: .circle), for: .normal)
             cell.checkButton.setTitleColor(color, for: .normal)
+            cell.textField.textColor = .darkGray
+            cell.textField.isEnabled = true
             cell.textField.becomeFirstResponder()
             cell.tag = indexPath.row
-            
         }
         cell.selectionStyle = .none
         
@@ -195,19 +207,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         return footerView
     }
     
-//    @objc func addList() {
-//        appDelegate.items.append("")
-//        tableView.reloadData()
-//    }
-//    func hideFooter(_ isHidden: Bool) {
-//        UIView.setAnimationsEnabled(false)
-//        tableView.beginUpdates()
-//
-//        footerView.isHidden = isHidden
-//
-//        tableView.endUpdates()
-//        UIView.setAnimationsEnabled(true)
-//    }
+
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath)
