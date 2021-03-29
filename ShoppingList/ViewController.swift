@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController {
     
@@ -182,8 +183,12 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             //cell.textField.placeholder = "입력하세요"
             cell.textField.font = UIFont.systemFont(ofSize: 20)
             cell.textField.text = appDelegate.items[indexPath.item]
-            cell.checkButton.titleLabel?.font = UIFont.fontAwesome(ofSize: 24, style: .regular)
-            cell.checkButton.setTitle(.fontAwesomeIcon(name: .circle), for: .normal)
+            if cell.textField.text == "" {
+                cell.checkButton.titleLabel?.font = UIFont.fontAwesome(ofSize: 24, style: .regular)
+                cell.checkButton.setTitle(.fontAwesomeIcon(name: .circle), for: .normal)
+                cell.textField.textColor = .darkGray
+                cell.textField.isEnabled = true
+            }
             cell.checkButton.setTitleColor(color, for: .normal)
             cell.textField.textColor = .darkGray
             cell.textField.isEnabled = true
